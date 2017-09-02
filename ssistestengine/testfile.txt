@@ -1,0 +1,5 @@
+﻿HEAD120170831050000US
+00133626NOUVAL                                            HUSSEIN                                           DEP00119750810M20170515
+00233625FRIDA                                             MAULINA                                           DEP00119760319F20170701
+00333624MYSHA                                             HUSSEIN                                           DEP00319800210F20170701
+TAIL120170831050000US003

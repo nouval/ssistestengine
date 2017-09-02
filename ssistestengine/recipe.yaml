@@ -1,0 +1,42 @@
+﻿---
+- kind: Header
+  specs:
+  - type: string
+    value: HEAD
+  - type: string
+    value: "1"
+  - type: dateTime
+    format: yyyyMMddhhmmss
+  - type: string
+    value: US
+- kind: Detail
+  numberOfRows: 3
+  specs:
+  - type: string
+    length: 3
+  - type: string
+    length: 5
+  - type: string
+    length: 50
+  - type: string
+    length: 50
+  - type: string
+    length: 6
+  - type: dateTime
+    format: yyyyMMdd
+  - type: string
+    length: 1
+  - type: dateTime
+    format: yyyyMMdd
+- kind: Footer
+  specs:
+  - type: string
+    value: TAIL
+  - type: string
+    value: "1"
+  - type: dateTime
+    format: yyyyMMddhhmmss
+  - type: string
+    value: US
+  - type: string
+    value: 003

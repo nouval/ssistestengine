@@ -1,0 +1,15 @@
+﻿---
+- kind: Detail
+  numberOfRows: 3
+  delimiter: ,
+  specs:
+  - type: string
+  - type: string
+  - type: string
+  - type: string
+  - type: string
+  - type: dateTime
+    format: yyyyMMdd
+  - type: string
+  - type: dateTime
+    format: yyyyMMdd
