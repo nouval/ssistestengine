@@ -1,7 +1,10 @@
 ﻿---
 - kind: ssistestengine.RegexLayoutValidator
-  name: Quoted comma-seperated value
+  name: Pipe delimited
   numberOfRows: 3
+  configs:
+    - key: regex
+      value: ((?<=\")[^\"]*(?=\"(\||$)+)|(?<=\||^)[^\|\"]*(?=\||$))
   specs:
   - type: ssistestengine.StringValidator
   - type: ssistestengine.StringValidator

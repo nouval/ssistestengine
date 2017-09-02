@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -11,6 +13,7 @@ namespace ssistestengine
         {
             new Recipe().Validate("recipe.yaml", "testfile.txt");
             new Recipe().Validate("recipe_csv.yaml", "testfile_csv.txt");
+            new Recipe().Validate("recipe_pipe.yaml", "testfile_pipe.txt");
         }
     }
 
@@ -42,15 +45,31 @@ namespace ssistestengine
 		}
     }
 
-    public class DelimitedLayoutValidator : LayoutValidator
+    public class RegexLayoutValidator : LayoutValidator
     {
-        public bool Validate(String line, Layout forIngredient)
+        const string Config_RegexKey = "regex";
+        const string QCSVRegex = "((?<=\\\")[^\\\"]*(?=\\\"(,|$)+)|(?<=,|^)[^,\\\"]*(?=,|$))";
+
+        private string[] Split(string line, string regex)
+        {
+            var fields = new List<string>();
+            var matchResults = new Regex(regex == null ? RegexLayoutValidator.QCSVRegex : regex).Matches(line);
+			foreach (var match in matchResults)
+			{
+				fields.Add(match.ToString());
+			}
+
+            return fields.ToArray();
+		}
+
+        public bool Validate(String line, Layout layout)
         {
 			bool valid = false;
-			int offset = 0, index = 0;
-			var fields = line.Split(',');
+            int offset = 0, index = 0;
+            List<string> field2s = new List<string>();
+            var fields = this.Split(line, layout.Configs.FindValue(RegexLayoutValidator.Config_RegexKey));
 
-			foreach (var spec in forIngredient.Specs)
+			foreach (var spec in layout.Specs)
 			{
                 valid = spec.Validate(fields[index], ref offset);
                 offset = 0;
@@ -165,6 +184,7 @@ namespace ssistestengine
         public string Name { get; set; }
 		public Specification[] Specs { get; set; }
         public int NumberOfRows { get; set; }
+        public KeyValue[] Configs { get; set; }
 
         public bool Validate(string line)
         {
@@ -199,5 +219,28 @@ namespace ssistestengine
                 return false;
 			}
 		}
+    }
+
+    public class KeyValue
+    {
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+
+    public static class Extension
+    {
+        public static string FindValue(this KeyValue[] @this, string key) 
+        {
+            if (@this == null)
+                return null;
+            
+            foreach(var item in @this)
+            {
+                if (item.Key.Equals(key, StringComparison.CurrentCultureIgnoreCase))
+                    return item.Value;
+            }
+
+            return null;
+        }
     }
 }
