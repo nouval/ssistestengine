@@ -9,31 +9,31 @@ namespace ssistestengine
     {
         public static void Main(string[] args)
         {
-            new Recipe().Cook("recipe.yaml", "testfile.txt");
-            new Recipe().Cook("recipe_csv.yaml", "testfile_csv.txt");
+            new Recipe().Validate("recipe.yaml", "testfile.txt");
+            new Recipe().Validate("recipe_csv.yaml", "testfile_csv.txt");
         }
     }
 
-    public interface IngredientValidator
+    public interface LayoutValidator
     {
-        bool Validate(string line, Ingredient forIngredient);
+        bool Validate(string line, Layout forIngredient);
     }
 
-    public interface MeasurementValidator
+    public interface SpecificationValidator
     {
-        bool Validate(string line, ref int offset, Measurement forMeasurement);
+        bool Validate(string line, ref int offset, Specification forMeasurement);
     }
 
-    public class FixedIngredientValidator : IngredientValidator
+    public class FixedLayoutValidator : LayoutValidator
     {
-        public bool Validate(string line, Ingredient forIngredient)
+        public bool Validate(string line, Layout forIngredient)
         {
 			bool valid = false;
 			int offset = 0;
 
 			foreach (var spec in forIngredient.Specs)
 			{
-				valid = spec.evaluate(line, ref offset);
+				valid = spec.Validate(line, ref offset);
 				if (!valid)
 					break;
 			}
@@ -42,9 +42,9 @@ namespace ssistestengine
 		}
     }
 
-    public class DelimitedIngredientValidator : IngredientValidator
+    public class DelimitedLayoutValidator : LayoutValidator
     {
-        public bool Validate(String line, Ingredient forIngredient)
+        public bool Validate(String line, Layout forIngredient)
         {
 			bool valid = false;
 			int offset = 0, index = 0;
@@ -52,7 +52,7 @@ namespace ssistestengine
 
 			foreach (var spec in forIngredient.Specs)
 			{
-                valid = spec.evaluate(fields[index], ref offset);
+                valid = spec.Validate(fields[index], ref offset);
                 offset = 0;
                 index++;
 				if (!valid)
@@ -63,9 +63,9 @@ namespace ssistestengine
 		}
     }
 
-    public class StringMeasurementValidator : MeasurementValidator
+    public class StringValidator : SpecificationValidator
     {
-        public bool Validate(string line, ref int offset, Measurement forMeasurement)
+        public bool Validate(string line, ref int offset, Specification forMeasurement)
         {
 			bool valid = false;
 
@@ -78,7 +78,6 @@ namespace ssistestengine
 			{
 				valid = line.Length >= offset + forMeasurement.Length && line.Substring(offset, forMeasurement.Length) != null;
 				offset += forMeasurement.Length;
-
 			}
             else
             {
@@ -89,9 +88,9 @@ namespace ssistestengine
         }
     }
 
-	public class DateTimeMeasurementValidator : MeasurementValidator
+	public class DateTimeValidator : SpecificationValidator
 	{
-		public bool Validate(string line, ref int offset, Measurement forMeasurement)
+		public bool Validate(string line, ref int offset, Specification forMeasurement)
 		{
 			DateTime dateVal;
 			bool valid = false;
@@ -108,8 +107,10 @@ namespace ssistestengine
 
     public class Recipe
     {
-		public void Cook(string recipeFilename, string outputFilename)
+		public bool Validate(string recipeFilename, string outputFilename)
 		{
+            bool allGood = false;
+
 			using (var fl = File.OpenText(recipeFilename))
 			{
 				try
@@ -117,82 +118,85 @@ namespace ssistestengine
                     var deserializer = new DeserializerBuilder()
                         .WithNamingConvention(new CamelCaseNamingConvention())
                         .Build();
-					var yamlObject = deserializer.Deserialize<Ingredient[]>(fl);
-					var line = 0;
+					var yamlObject = deserializer.Deserialize<Layout[]>(fl);
 
 					using (var flIn = File.OpenText(outputFilename))
 					{
-						foreach (var ingredient in yamlObject)
+						foreach (var layout in yamlObject)
 						{
-							var nbrOfRows = ingredient.NumberOfRows;
+							var nbrOfRows = layout.NumberOfRows;
 
 							do
 							{
-								var valid = ingredient.evaluate(flIn.ReadLine());
+                                string content = flIn.ReadLine();
+								var valid = layout.Validate(content);
 								nbrOfRows--;
-								line++;
-								if (!valid)
-								{
-                                    throw new Exception($"Invalid entry at line: {line}, expecting kind of: {ingredient.Kind}, Name: {ingredient.Name}");
+                                if (content == null && !valid) {
+                                    throw new Exception($"Invalid content, expecting {layout.NumberOfRows} rows. Found {layout.NumberOfRows - nbrOfRows - 1} rows");
+                                } else if (!valid) {
+                                    throw new Exception($"Invalid entry at line: {layout.NumberOfRows - nbrOfRows}, expecting kind of: {layout.Kind}, Name: {layout.Name}");
 								}
 							}
 							while (nbrOfRows > 0);
 						}
 					}
-					Console.WriteLine("All Good");
+
+                    allGood = true;
 				}
 				catch (Exception ex)
 				{
 					Console.WriteLine(ex.Message);
 				}
 			}
+
+            return allGood;
 		}    
 
-        public static T CreateTaster<T>(string strFullyQualifiedName)
+        public static T CreateValidator<T>(string strFullyQualifiedName)
 		{
 			Type t = Type.GetType(strFullyQualifiedName);
             return (T)Activator.CreateInstance(t);
 		}
     }
 
-    public class Ingredient
+    public class Layout
     {
 		public string Kind { get; set; }
         public string Name { get; set; }
-		public Measurement[] Specs { get; set; }
+		public Specification[] Specs { get; set; }
         public int NumberOfRows { get; set; }
 
-        public bool evaluate(string line)
+        public bool Validate(string line)
         {
             try 
             {
-                return Recipe.CreateTaster<IngredientValidator>(this.Kind)
+                return Recipe.CreateValidator<LayoutValidator>(this.Kind)
                              .Validate(line, this);
 			}
             catch (Exception)
             {
-                throw new Exception("Wrong 'Kind' you dummy :)");
+                return false;
             }
         }
 	}
 
-    public class Measurement
+    public class Specification
     {
         public string Type { get; set; }
         public string Value { get; set; }
         public string Format { get; set; }
         public int Length { get; set; }
 
-        public bool evaluate(string line, ref int offset)
+        public bool Validate(string line, ref int offset)
         {
 			try
 			{
-                return Recipe.CreateTaster<MeasurementValidator>(this.Type)
+                return Recipe.CreateValidator<SpecificationValidator>(this.Type)
                              .Validate(line, ref offset, this);
 			}
 			catch (Exception)
 			{
-				throw new Exception("Wrong 'Type' you dummy :)");
+                return false;
 			}
 		}
     }

@@ -1,45 +1,45 @@
 ﻿---
-- kind: ssistestengine.FixedIngredientValidator
+- kind: ssistestengine.FixedLayoutValidator
   name: Header
   specs:
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: HEAD
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: "1"
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMddhhmmss
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: US
-- kind: ssistestengine.FixedIngredientValidator
+- kind: ssistestengine.FixedLayoutValidator
   name: Detail
   numberOfRows: 3
   specs:
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 3
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 5
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 50
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 50
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 6
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMdd
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     length: 1
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMdd
-- kind: ssistestengine.FixedIngredientValidator
+- kind: ssistestengine.FixedLayoutValidator
   name: Footer
   specs:
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: TAIL
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: "1"
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMddhhmmss
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: US
-  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringValidator
     value: 003

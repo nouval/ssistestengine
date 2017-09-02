@@ -1,15 +1,15 @@
 ﻿---
-- kind: ssistestengine.DelimitedIngredientValidator
+- kind: ssistestengine.DelimitedLayoutValidator
   name: Detail
-  numberOfRows: 3
+  numberOfRows: 5
   specs:
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMdd
-  - type: ssistestengine.StringMeasurementValidator
-  - type: ssistestengine.DateTimeMeasurementValidator
+  - type: ssistestengine.StringValidator
+  - type: ssistestengine.DateTimeValidator
     format: yyyyMMdd
