@@ -1,15 +1,15 @@
 ﻿---
-- kind: Detail
+- kind: ssistestengine.DelimitedIngredientValidator
+  name: Detail
   numberOfRows: 3
-  delimiter: ,
   specs:
-  - type: string
-  - type: string
-  - type: string
-  - type: string
-  - type: string
-  - type: dateTime
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMdd
-  - type: string
-  - type: dateTime
+  - type: ssistestengine.StringMeasurementValidator
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMdd

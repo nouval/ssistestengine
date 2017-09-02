@@ -1,42 +1,45 @@
 ﻿---
-- kind: Header
+- kind: ssistestengine.FixedIngredientValidator
+  name: Header
   specs:
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: HEAD
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: "1"
-  - type: dateTime
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMddhhmmss
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: US
-- kind: Detail
+- kind: ssistestengine.FixedIngredientValidator
+  name: Detail
   numberOfRows: 3
   specs:
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 3
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 5
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 50
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 50
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 6
-  - type: dateTime
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMdd
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     length: 1
-  - type: dateTime
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMdd
-- kind: Footer
+- kind: ssistestengine.FixedIngredientValidator
+  name: Footer
   specs:
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: TAIL
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: "1"
-  - type: dateTime
+  - type: ssistestengine.DateTimeMeasurementValidator
     format: yyyyMMddhhmmss
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: US
-  - type: string
+  - type: ssistestengine.StringMeasurementValidator
     value: 003
